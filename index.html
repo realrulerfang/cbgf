@@ -71,20 +71,18 @@
 
   /* ---------- contract address badge ---------- */
   .ca-badge{
-    position:fixed;
-    top:14px;
-    left:16px;
-    z-index:30;
+    display:inline-block;
     font-family:'JetBrains Mono',monospace;
-    font-size:0.72rem;
+    font-size:0.78rem;
     font-weight:600;
     letter-spacing:0.04em;
     color:var(--deep-blue);
     background:rgba(255,255,255,0.75);
     border:1px solid rgba(0,82,255,0.3);
-    padding:5px 10px;
-    border-radius:7px;
+    padding:6px 14px;
+    border-radius:999px;
     backdrop-filter:blur(8px);
+    margin-bottom:18px;
   }
 
   /* ---------- nav ---------- */
@@ -410,21 +408,19 @@
   <div class="bg-scrim"></div>
   <div class="grid-overlay"></div>
 
-  <div class="ca-badge">CA: SOON</div>
-
   <nav>
     <div class="logo"><span class="sq"></span>basesnack</div>
     <div class="navlinks">
       <a href="#facts">spec sheet</a>
       <a href="#rewards">holder perks</a>
       <a href="#memes">memes</a>
-      <a href="#ape">how to buy</a>
       <span class="status"><span class="dot"></span>network: online</span>
     </div>
   </nav>
 
   <header class="hero">
     <span class="eyebrow">chain id: 8453 · flavor id: blue</span>
+    <div class="ca-badge">CA: SOON</div>
     <h1>basesnack</h1>
     <p class="tagline">The only chip that's 100% onchain and 0% off-brand.</p>
     <p class="subtag">// zero gas fees. zero slippage. maximum crunch throughput.</p>
@@ -546,29 +542,6 @@
     </div>
   </section>
 
-  <section id="ape">
-    <div class="section-head">
-      <span class="tag">guide</span>
-      <h2>How to ape into $SNACK in 3 steps</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <span class="k">step_01</span>
-        <h4>Connect your fridge</h4>
-        <p>No seed phrase required — just open the door. It's the only wallet that actually holds something of value.</p>
-      </div>
-      <div class="step">
-        <span class="k">step_02</span>
-        <h4>Pay the gas fee ($0.00)</h4>
-        <p>The basesnack network fee is lower than the rounding error on your grocery receipt. Technically already deflationary.</p>
-      </div>
-      <div class="step">
-        <span class="k">step_03</span>
-        <h4>Hold the bag until tonight</h4>
-        <p>Spoiler: nobody holds longer than 20 minutes. The most honest ape-in in all of crypto.</p>
-      </div>
-    </div>
-  </section>
 
   <footer>
     <div class="brand-line">■ basesnack — the lowest-fee item in the entire grocery cart</div>
