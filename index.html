@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>basesnack — 100% onchain crunch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --base-blue:#0052FF;
+    --deep-navy:#050A1F;
+    --ink:#EAF0FF;
+    --cyan:#4DE3FF;
+    --chip-gold:#FFD84D;
+    --line: rgba(234,240,255,0.18);
+    --card-bg: rgba(6,12,36,0.62);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--deep-navy);
+    overflow-x:hidden;
+  }
+
+  /* ---------- fixed full-bleed video background ---------- */
+  .bg-video-wrap{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    z-index:-2;
+    overflow:hidden;
+  }
+  .bg-video-wrap video{
+    position:absolute;
+    top:50%;
+    left:50%;
+    min-width:100%;
+    min-height:100%;
+    width:auto;
+    height:auto;
+    transform:translate(-50%,-50%);
+    object-fit:cover;
+    filter:saturate(1.15) contrast(1.05);
+  }
+  .bg-scrim{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(120% 90% at 50% 8%, rgba(5,10,31,0.35) 0%, rgba(5,10,31,0.72) 45%, rgba(5,10,31,0.94) 100%),
+      linear-gradient(180deg, rgba(0,20,80,0.35) 0%, rgba(5,10,31,0.55) 40%, #050A1F 100%);
+  }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 5vw;
+    backdrop-filter: blur(6px);
+    background:linear-gradient(180deg, rgba(5,10,31,0.55), transparent);
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:1.15rem;
+    letter-spacing:-0.02em;
+  }
+  .logo .sq{
+    width:16px;height:16px;background:var(--ink);
+    display:inline-block;
+    border-radius:2px;
+  }
+  .navlinks{display:flex; gap:28px; font-size:0.85rem; font-family:'JetBrains Mono',monospace;}
+  .navlinks a{color:var(--ink); text-decoration:none; opacity:0.75; transition:opacity .2s;}
+  .navlinks a:hover{opacity:1;}
+  @media (max-width:640px){.navlinks{display:none;}}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:120px 6vw 60px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    background:rgba(77,227,255,0.08);
+    border:1px solid rgba(77,227,255,0.35);
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:28px;
+  }
+  h1{
+    font-family:'Archivo Black',sans-serif;
+    font-size:clamp(2.6rem, 9vw, 6.4rem);
+    line-height:0.95;
+    margin:0;
+    letter-spacing:-0.01em;
+    text-transform:lowercase;
+  }
+  h1 .accent{color:var(--base-blue); -webkit-text-stroke:2px var(--cyan);}
+  .tagline{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(1.05rem,2.4vw,1.5rem);
+    max-width:640px;
+    margin:22px auto 8px;
+    color:rgba(234,240,255,0.88);
+  }
+  .subtag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.85rem;
+    color:rgba(234,240,255,0.55);
+    margin-bottom:38px;
+  }
+  .cta-row{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    padding:15px 30px;
+    border-radius:10px;
+    text-decoration:none;
+    display:inline-block;
+    border:1px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{
+    background:var(--chip-gold);
+    color:#1a1400;
+    box-shadow:0 0 0 rgba(255,216,77,0);
+  }
+  .btn-primary:hover{box-shadow:0 10px 30px rgba(255,216,77,0.25);}
+  .btn-ghost{
+    border-color:var(--line);
+    color:var(--ink);
+    background:rgba(255,255,255,0.03);
+  }
+
+  .scroll-hint{
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    color:rgba(234,240,255,0.45);
+    letter-spacing:0.1em;
+    animation:bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translate(-50%,0);}50%{transform:translate(-50%,8px);}}
+
+  /* ---------- section shell ---------- */
+  section{
+    position:relative;
+    padding:90px 6vw;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .section-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:44px;
+    flex-wrap:wrap;
+  }
+  .section-head .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem; color:var(--cyan);
+    border:1px solid rgba(77,227,255,0.35);
+    padding:4px 10px; border-radius:6px;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0;
+  }
+
+  /* ---------- nutrition facts card (signature element) ---------- */
+  .nutrition{
+    display:grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media (max-width:820px){.nutrition{grid-template-columns:1fr;}}
+  .nutrition p.lead{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.15rem;
+    line-height:1.55;
+    color:rgba(234,240,255,0.85);
+  }
+  .facts-panel{
+    background:#fff;
+    color:#0a0a0a;
+    border-radius:4px;
+    padding:20px 22px 24px;
+    font-family:'Inter',sans-serif;
+    box-shadow:0 30px 70px rgba(0,0,0,0.55);
+  }
+  .facts-panel h3{
+    font-family:'Archivo Black',sans-serif;
+    font-size:2rem;
+    margin:0 0 4px;
+    border-bottom:10px solid #0a0a0a;
+    padding-bottom:6px;
+  }
+  .facts-panel .servings{
+    font-size:0.9rem;
+    border-bottom:5px solid #0a0a0a;
+    padding-bottom:8px;
+    margin-bottom:8px;
+  }
+  .facts-row{
+    display:flex; justify-content:space-between;
+    font-size:0.92rem;
+    padding:6px 0;
+    border-bottom:1px solid #0a0a0a;
+  }
+  .facts-row.bold{font-weight:800; font-size:1.05rem;}
+  .facts-row.thick{border-bottom:7px solid #0a0a0a;}
+  .facts-row span:last-child{font-weight:700;}
+  .facts-footnote{
+    font-size:0.72rem;
+    margin-top:12px;
+    line-height:1.4;
+    color:#333;
+  }
+
+  /* ---------- meme grid ---------- */
+  .meme-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+  }
+  .meme-card{
+    background:var(--card-bg);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px 24px;
+    backdrop-filter:blur(10px);
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .meme-card:hover{transform:translateY(-4px); border-color:rgba(77,227,255,0.5);}
+  .meme-card .num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;
+    color:var(--chip-gold);
+    display:block;
+    margin-bottom:10px;
+  }
+  .meme-card h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.15rem;
+    margin:0 0 10px;
+    line-height:1.3;
+  }
+  .meme-card p{
+    font-size:0.92rem;
+    color:rgba(234,240,255,0.7);
+    line-height:1.5;
+    margin:0;
+  }
+
+  /* ---------- ticker ---------- */
+  .ticker-wrap{
+    overflow:hidden;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:16px 0;
+    background:rgba(0,82,255,0.08);
+    white-space:nowrap;
+  }
+  .ticker{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.88rem;
+    color:var(--cyan);
+    animation:scroll-left 26s linear infinite;
+  }
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ---------- roadmap-ish / how to ape section ---------- */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:24px;
+  }
+  .step{
+    padding:24px;
+    border-left:2px solid var(--base-blue);
+    background:linear-gradient(90deg, rgba(0,82,255,0.08), transparent);
+  }
+  .step .k{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;
+    color:var(--chip-gold);
+  }
+  .step h4{
+    font-family:'Space Grotesk',sans-serif;
+    margin:8px 0 6px;
+    font-size:1.05rem;
+  }
+  .step p{margin:0; font-size:0.88rem; color:rgba(234,240,255,0.7); line-height:1.5;}
+
+  footer{
+    padding:50px 6vw 40px;
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;
+    color:rgba(234,240,255,0.4);
+    border-top:1px solid var(--line);
+    max-width:1180px;
+    margin:0 auto;
+    line-height:1.7;
+  }
+  footer .brand-line{color:rgba(234,240,255,0.7); margin-bottom:6px;}
+
+  ::selection{background:var(--base-blue); color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    .scroll-hint, .ticker{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="basesnack-bg.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="bg-scrim"></div>
+
+  <nav>
+    <div class="logo"><span class="sq"></span>basesnack</div>
+    <div class="navlinks">
+      <a href="#facts">nutrition facts</a>
+      <a href="#memes">memes</a>
+      <a href="#ape">как войти</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="eyebrow">chain id: 8453 · flavor id: blue</span>
+    <h1>base<span class="accent">snack</span></h1>
+    <p class="tagline">Единственный чипс, который on-chain на 100% и off-diet на 0%.</p>
+    <p class="subtag">// нулевые газ-фии. нулевой слипэдж. максимальный крънч.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#ape">заминтить пачку</a>
+      <a class="btn btn-ghost" href="#memes">смотреть мемы</a>
+    </div>
+    <div class="scroll-hint">scroll ↓ don't be ngmi</div>
+  </header>
+
+  <div class="ticker-wrap">
+    <div class="ticker">
+      $SNACK +9000% ・ GAS: $0.00 ・ CRUNCH: ATH ・ JESSE APPROVED* ・ 100% BASED INGREDIENTS ・ NOT A BLUE CHIP, A BLUE CHIP(S) ・ ONCHAIN SUMMER, ONCHAIN SNACK ・ SLIPPAGE: 0% ・ DIAMOND HANDS, GREASY FINGERS ・&nbsp;
+      $SNACK +9000% ・ GAS: $0.00 ・ CRUNCH: ATH ・ JESSE APPROVED* ・ 100% BASED INGREDIENTS ・ NOT A BLUE CHIP, A BLUE CHIP(S) ・ ONCHAIN SUMMER, ONCHAIN SNACK ・ SLIPPAGE: 0% ・ DIAMOND HANDS, GREASY FINGERS ・&nbsp;
+    </div>
+  </div>
+
+  <section id="facts">
+    <div class="section-head">
+      <span class="tag">важное</span>
+      <h2>Факты о пачке, а не только о токене</h2>
+    </div>
+    <div class="nutrition">
+      <p class="lead">
+        Мы всё проверили в ончейн-лаборатории: ни одной скрытой комиссии, ни одного вредного централизованного ингредиента.
+        Каждый треугольный чипс отлит по образу и подобию логотипа сети — потому что если сеть синяя и квадратная,
+        снек обязан быть синим и треугольным. Это баланс.
+      </p>
+      <p class="lead">Прочтите этикетку. Она честнее, чем большинство whitepaper'ов.</p>
+      <div class="facts-panel">
+        <h3>Nutrition Facts</h3>
+        <div class="servings">Размер порции: 1 пачка (весь ваш portfolio)</div>
+        <div class="facts-row bold thick"><span>Калорийность</span><span>0 газ-юнитов</span></div>
+        <div class="facts-row"><span>Крънчинес</span><span>100%</span></div>
+        <div class="facts-row"><span>Ончейновость</span><span>100% DV</span></div>
+        <div class="facts-row"><span>Basedность</span><span>9000%+</span></div>
+        <div class="facts-row"><span>Слипэдж</span><span>0%</span></div>
+        <div class="facts-row"><span>Farcaster-совместимость</span><span>да</span></div>
+        <div class="facts-row"><span>Липкость на пальцах</span><span>критическая</span></div>
+        <div class="facts-row bold"><span>Сожаления после пачки</span><span>0%</span></div>
+        <div class="facts-footnote">
+          * Ингредиенты: синяя кукуруза, морская соль, based-специи, ликвидность, немного гордости за низкие комиссии.
+          Может содержать следы hopium. Хранить подальше от seed-фразы.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="memes">
+    <div class="section-head">
+      <span class="tag">лор</span>
+      <h2>Мемы, придуманные специально для пачки</h2>
+    </div>
+    <div class="meme-grid">
+      <div class="meme-card">
+        <span class="num">01</span>
+        <h4>«Blue chip» — теперь буквально</h4>
+        <p>Все искали blue chip актив, а он просто лежал на полке в синей упаковке за 99 центов. Дно найдено, но это дно пачки.</p>
+      </div>
+      <div class="meme-card">
+        <span class="num">02</span>
+        <h4>Газ ниже, чем цена доставки</h4>
+        <p>Транзакция в сети дешевле, чем донести пачку от кассы до дома. Onchain summer официально победил offchain голод.</p>
+      </div>
+      <div class="meme-card">
+        <span class="num">03</span>
+        <h4>Треугольные чипсы, квадратный логотип</h4>
+        <p>Геометрия не сходится, зато крънч сходится идеально. Аудит формы не проводился, аудит вкуса — пройден единогласно.</p>
+      </div>
+      <div class="meme-card">
+        <span class="num">04</span>
+        <h4>DYOR = Dig Your Own Rummaging</h4>
+        <p>Прежде чем купить любой токен, всегда делай своё исследование. Прежде чем доесть пачку — делай своё раскопки на дне.</p>
+      </div>
+      <div class="meme-card">
+        <span class="num">05</span>
+        <h4>Диамонд хендс, жирные пальцы</h4>
+        <p>Держим позицию до последнего чипса. Клавиатуру потом отмывать сложнее, чем пересиживать медвежий рынок.</p>
+      </div>
+      <div class="meme-card">
+        <span class="num">06</span>
+        <h4>Не vaporware, а vapor-fried</h4>
+        <p>Продукт реальный, хрустящий и физически существует — редкость для чего-либо со словом «chain» в описании.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ape">
+    <div class="section-head">
+      <span class="tag">гайд</span>
+      <h2>Как заминтить пачку в 3 шага</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="k">шаг_01</span>
+        <h4>Подключи холодильник</h4>
+        <p>Никаких сид-фраз — просто открой дверцу. Это твой единственный «wallet», который реально что-то хранит.</p>
+      </div>
+      <div class="step">
+        <span class="k">шаг_02</span>
+        <h4>Заплати газ (0.00 ₽)</h4>
+        <p>Комиссия сети basesnack ниже, чем округление в чеке супермаркета. Технически это уже дефляционный снек.</p>
+      </div>
+      <div class="step">
+        <span class="k">шаг_03</span>
+        <h4>Захолди пачку до вечера</h4>
+        <p>Спойлер: никто не холдит дольше 20 минут. Это самый честный ape-in во всей крипте.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="brand-line">■ basesnack — снек с наименьшей комиссией во всей продуктовой корзине</div>
+    Это не финансовый совет. Это даже не совет по питанию. Просто пачка, в которую очень хочется зайти long.
+  </footer>
+
+</body>
+</html>
