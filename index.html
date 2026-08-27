@@ -69,6 +69,24 @@
     mask-image:linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15) 55%, transparent 85%);
   }
 
+  /* ---------- contract address badge ---------- */
+  .ca-badge{
+    position:fixed;
+    top:14px;
+    left:16px;
+    z-index:30;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem;
+    font-weight:600;
+    letter-spacing:0.04em;
+    color:var(--deep-blue);
+    background:rgba(255,255,255,0.75);
+    border:1px solid rgba(0,82,255,0.3);
+    padding:5px 10px;
+    border-radius:7px;
+    backdrop-filter:blur(8px);
+  }
+
   /* ---------- nav ---------- */
   nav{
     position:fixed; top:0; left:0; right:0; z-index:20;
@@ -392,10 +410,13 @@
   <div class="bg-scrim"></div>
   <div class="grid-overlay"></div>
 
+  <div class="ca-badge">CA: SOON</div>
+
   <nav>
     <div class="logo"><span class="sq"></span>basesnack</div>
     <div class="navlinks">
       <a href="#facts">spec sheet</a>
+      <a href="#rewards">holder perks</a>
       <a href="#memes">memes</a>
       <a href="#ape">how to buy</a>
       <span class="status"><span class="dot"></span>network: online</span>
@@ -450,6 +471,37 @@
         <div class="facts-footnote">
           Ingredients: blue corn, sea salt, based seasoning, liquidity. May contain trace amounts of hopium.
           Keep away from your seed phrase.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rewards">
+    <div class="section-head">
+      <span class="tag">holder perks</span>
+      <h2>Hold the bag, get the whole snack aisle</h2>
+    </div>
+    <div class="nutrition">
+      <p class="lead">
+        $BASESNACK isn't just one chip — it's a family meal. Every wallet holding $BASESNACK automatically
+        qualifies for airdrops of two companion tokens from the same pantry. No extra steps, no extra gas,
+        no extra forms. Just hold the bag and let the snack drawer restock itself.
+      </p>
+      <p class="lead">Think of it as a multipack: one purchase, three flavors sitting in your bag.</p>
+      <div class="facts-panel">
+        <div class="panel-head">
+          <h3>Companion Tokens</h3>
+          <span class="build">auto-airdrop</span>
+        </div>
+        <div class="facts-row bold"><span>$BASEJUICE</span><span>the drink to wash it down</span></div>
+        <div class="facts-row"><span>Distribution</span><span>proportional to $BASESNACK held</span></div>
+        <div class="facts-row"><span>Contract</span><span><a href="https://basedbot.app/token/base/0xb200000000000000000000046390aed221043f01" target="_blank" rel="noopener" style="color:var(--base-blue); text-decoration:none;">view on basedbot.app ↗</a></span></div>
+        <div class="facts-row bold thick"><span>$BLUECHIP</span><span>the dessert nobody expected</span></div>
+        <div class="facts-row"><span>Distribution</span><span>proportional to $BASESNACK held</span></div>
+        <div class="facts-row bold"><span>Total snacks in the bag</span><span>3 tokens, 1 wallet</span></div>
+        <div class="facts-footnote">
+          Snapshots are taken periodically — the longer you hold $BASESNACK, the more of the pantry shows up
+          in your wallet. No claiming, no clicking, no forms. Not financial advice, just a very generous vending machine.
         </div>
       </div>
     </div>
